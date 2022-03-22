@@ -6,14 +6,16 @@ from rest_framework import status
 
 from .serializers import JobSerializer
 from .models import Job
+from .filters import JobsFilter
 
 # Create your views here.
 
 
 @api_view(['GET'])
 def getAllJobs(request):
-    jobs = Job.objects.all()
-    serializer = JobSerializer(jobs, many=True)
+    filterset = JobsFilter(
+        request.GET, queryset=Job.objects.all().order_by('id'))
+    serializer = JobSerializer(filterset.qs, many=True)
     return Response(serializer.data)
 
 
