@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'storages',
     'job.apps.JobConfig',
-    'accpount.apps.AccountConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -116,7 +116,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication'
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
     )
 }
 
