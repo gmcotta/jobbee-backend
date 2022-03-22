@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404
+from django.db.models import Avg, Min, Max, Count
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
@@ -8,11 +9,13 @@ from .models import Job
 
 # Create your views here.
 
+
 @api_view(['GET'])
 def getAllJobs(request):
     jobs = Job.objects.all()
     serializer = JobSerializer(jobs, many=True)
     return Response(serializer.data)
+
 
 @api_view(['GET'])
 def getJobById(request, id):
@@ -20,12 +23,14 @@ def getJobById(request, id):
     serializer = JobSerializer(job, many=False)
     return Response(serializer.data)
 
+
 @api_view(['POST'])
 def createJob(request):
     data = request.data
     job = Job.objects.create(**data)
     serializer = JobSerializer(job, many=False)
     return Response(serializer.data)
+
 
 @api_view(['PUT'])
 def updateJob(request, id):
@@ -50,8 +55,31 @@ def updateJob(request, id):
     serializer = JobSerializer(job, many=False)
     return Response(serializer.data)
 
+
 @api_view(['DELETE'])
 def deleteJob(request, id):
     job = get_object_or_404(Job, id=id)
     job.delete()
-    return Response({ 'message': 'Job deleted.' }, status=status.HTTP_200_OK)
+    return Response({'message': 'Job deleted.'}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getTopicStats(request, topic):
+    args = {
+        'title__icontains': topic
+    }
+    jobs = Job.objects.filter(**args)
+    if len(jobs) == 0:
+        return Response(
+            {
+                'message': 'Not stats found for {topic}'.format(topic=topic)
+            }
+        )
+    stats = jobs.aggregate(
+        total_jobs=Count('title'),
+        avg_positions=Avg('positions'),
+        avg_salary=Avg('salary'),
+        min_salary=Min('salary'),
+        max_salary=Max('salary'),
+    )
+    return Response(stats)
