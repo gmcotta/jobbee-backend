@@ -1,13 +1,12 @@
-from django.shortcuts import get_object_or_404
-from django.db.models import Avg, Min, Max, Count
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
+from django.utils.datastructures import MultiValueDictKeyError
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.pagination import PageNumberPagination
 
+from .validators import validate_file_extension
 from .serializers import SignUpSerializer, UserSerializer
 
 # Create your views here.
@@ -67,11 +66,18 @@ def updateUser(request):
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def uploadResume(request):
+    if 'resume' not in request.FILES:
+        return Response(
+            {'error': 'Please, upload your resume.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
     user = request.user
     resume = request.FILES['resume']
-    if resume == '':
+    isValidFile = validate_file_extension(resume.name)
+    if not isValidFile:
         return Response(
-            {'error': 'Please, upload your resume.'}
+            {'error': 'Please, upload only .pdf files.'},
+            status=status.HTTP_400_BAD_REQUEST
         )
     serializer = UserSerializer(user, many=False)
     user.userprofile.resume = resume
