@@ -180,5 +180,7 @@ DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000',
     'http://127.0.0.1:3000',
+    'https://jobbee-frontend-gmcotta.vercel.app',
+    'https://jobbee-frontend-git-main-gmcotta.vercel.app',
+    'https://jobbee-frontend.vercel.app',
 ]
-
