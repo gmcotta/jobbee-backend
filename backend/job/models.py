@@ -33,7 +33,7 @@ class Experience(models.TextChoices):
     NO_EXPERIENCE = 'No Experience'
     ONE_YEAR = '1 Year'
     TWO_YEARS = '2 Years'
-    THREE_YEARS_PLUS = '3 Years above'
+    THREE_YEARS_PLUS = '3 Years Above'
 
 def return_date_time():
     now = datetime.now()
