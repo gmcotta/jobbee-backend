@@ -33,7 +33,7 @@ class Experience(models.TextChoices):
     NO_EXPERIENCE = 'No Experience'
     ONE_YEAR = '1 Year'
     TWO_YEARS = '2 Years'
-    THREE_YEARS_PLUS = '3 Years above'
+    THREE_YEARS_PLUS = '3 Years Above'
 
 def return_date_time():
     now = datetime.now()
@@ -85,3 +85,9 @@ class Job(models.Model):
         lat = g.lat
         self.point = Point(lng, lat)
         super(Job, self).save(*args, **kwargs)
+
+class CandidatesApplied(models.Model):
+    job = models.ForeignKey(Job, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    resume = models.CharField(max_length=200)
+    appliedAt = models.DateTimeField(auto_now_add=True)
